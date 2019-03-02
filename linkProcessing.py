@@ -9,15 +9,15 @@ def isRedditLink(url):
         try:
             if prefix[:-2]!='np' and prefix[:-3]!='www' and prefix[:-3]!='old' and prefix[:-3]!='new' and prefix[:-7]!='http://' and prefix[:-8]!="https://":
                 return False
-            except:
-                return False
+        except:
+            return False
     return True
 
 def isSubLink(url):
     if not isRedditLink(url):
          return False
     redditStart=url.lower().find("reddit.com")
-    return url[redditStart+10:].lower().find("/r/femradebates")==0:
+    return url[redditStart+10:].lower().find("/r/femradebates")==0
 
 def isPostLink(url):
     if not isSubLink(url):

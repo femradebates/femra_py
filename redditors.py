@@ -42,7 +42,7 @@ class Redditor:
             yield link
 
     def addDeletedThing(self,newThing):
-        currentDeletedThings=self._dbData_..get().to_dict()['deletedThings']
+        currentDeletedThings=self._dbData_.get().to_dict()['deletedThings']
 
         if not isinstance(newThing,(str,Submission,Comment)):
             raise TypeError("Expected str, Submission, or Comment, got {}".format(type(newThing)))
@@ -51,7 +51,7 @@ class Redditor:
             if isPostLink(newThing):
                 currentDeletedThings.append(newThing)
             elif isCommentLink(newThing):
-                currentDeletedThings.append(newThing))
+                currentDeletedThings.append(newThing)
             else:
                 raise ValueError("{} is not an acceptable link".format(newThing))
         else:
@@ -67,15 +67,11 @@ class Redditor:
             raise ValueError("Tier must be between 0 and 4")
         self._dbData_.update({'tier':val})
     
-    tier = property(getTier,setTier)
-    flair = property(getFlair,readOnlyPlaceholder)
-    prawUser = property(getPrawUser,readOnlyPlaceholder)
-
 class Redditors:
     def __init__(self, db, reddit):
         self.db=db
         self.reddit=reddit
-        self._userNames_=[name[1:] for name in db.collection("redditors").document('allUsers').to_dict()['list']]
+        self._userNames_=[name[1:] for name in db.collection("redditors").document('allUsers').get().to_dict()['list']]
         self._users_={}
         self._userSet_=set(self._userNames_)
     

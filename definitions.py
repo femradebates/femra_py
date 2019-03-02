@@ -28,7 +28,7 @@ class Definitions:
         return self._glossary_[key]
 
     def __iter__(self):
-        for res in sorted(self._glossary_.values, lambda d: d['term'].lower()):
+        for res in sorted(self._glossary_.values(), key=lambda d: d.term.lower()):
             yield res
 
     def __contains__(self, key):

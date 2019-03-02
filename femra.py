@@ -2,17 +2,18 @@ import json
 
 import praw
 import firebase_admin
-from firebase_admin import credentials
+from firebase_admin import credentials, firestore
 from requests import request
 
-from definitions import Definition, Definitions
+from definitions import Definitions
+from redditors import Redditors
 
 class Femra:
     def __init__(self, config):
         cred=credentials.Certificate(config['firebaseConfig'])
-        self.db = firebase_admin.initialize_app(cred)
+        self.db = firestore.client(firebase_admin.initialize_app(cred))
         redditConfig=config['reddit']
-        self.reddit=praw.Reddit( Reddit(
+        self.reddit=praw.Reddit(
             client_id = redditConfig['client_id'],
             client_secret = redditConfig['client_secret'],
             user_agent="{}:{}:{} (by {})".format(
@@ -24,4 +25,22 @@ class Femra:
             username = redditConfig["auth"]["username"],
             password = redditConfig["auth"]["password"]
         )
-        self.definitions= Definitions("https://raw.githubusercontent.com/femradebates/femraWebsite/master/src/data/definitions.json")
+
+        self._definitions_ = Definitions("https://raw.githubusercontent.com/femradebates/femraWebsite/master/src/data/definitions.json")
+        self._redditors_ = Redditors(self.db,self.reddit)
+    
+    @property
+    def definitions(self):
+        return self._definitions_
+    
+    @property
+    def redditors(self):
+        return self._redditors_
+
+femra=None
+
+with open('config.json','r') as configFile:
+    femra=Femra(json.load(configFile))
+
+for d in femra.definitions:
+    print(d)
