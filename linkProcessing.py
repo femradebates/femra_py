@@ -4,7 +4,7 @@ def isRedditLink(url):
         return False
     if redditStart>0:
         prefix = url[:redditStart]
-        if len(redditStart)<2:
+        if len(prefix)<2:
             return False
         try:
             if prefix[:-2]!='np' and prefix[:-3]!='www' and prefix[:-3]!='old' and prefix[:-3]!='new' and prefix[:-7]!='http://' and prefix[:-8]!="https://":

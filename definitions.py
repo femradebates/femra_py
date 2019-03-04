@@ -11,7 +11,9 @@ class Definition:
     
     def __str__(self):
         """Returns the markdown of the definition"""
-        return "placeholder"
+        altTermsString=(" "+', '.join(self.altTerms)) if len(self.altTerms)>0 else ''
+        notesString = (" "+', '.join(self.notes)) if len(self.notes)>0 else ''
+        return "{}**{}**{}{} {}".format((self.prefix+' ') if len(self.prefix)>0 else ' ',self.term, altTermsString, notesString, self.definition)
 
 class Definitions:
     def __init__(self,url):

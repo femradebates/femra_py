@@ -42,5 +42,7 @@ femra=None
 with open('config.json','r') as configFile:
     femra=Femra(json.load(configFile))
 
-for d in femra.definitions:
-    print(d)
+for Def in femra.definitions:
+    print(Def)
+
+print(femra.redditors["wazzup987"])

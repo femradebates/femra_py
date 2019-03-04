@@ -24,12 +24,19 @@ class Redditor:
     @property
     def tier(self):
         return self._dbData_.get().to_dict()['tier']
+    @tier.setter
+    def tier(self,val):
+        if not(4<=val<0):
+            raise ValueError("Tier must be between 0 and 4")
+        self._dbData_.update({'tier':val})
+    
     @property
     def name(self):
         return self._name_
     @property
     def prawUser(self):
         return self._prawUser_
+    
     @property
     def deletedThings(self):
         for link in self._dbData_.get().to_dict()['deletedThings']:
@@ -40,6 +47,15 @@ class Redditor:
                 yield Submission(self._reddit_,url=link)
                 continue
             yield link
+
+    @property
+    def wasModded(self):
+        """Tells whether the users has been modded _on this account_"""
+        res=False
+        for x in self.deletedThings:
+            res=True
+            break
+        return res
 
     def addDeletedThing(self,newThing):
         currentDeletedThings=self._dbData_.get().to_dict()['deletedThings']
@@ -61,12 +77,15 @@ class Redditor:
         
         self._dbData_.update({'deletedThings':currentDeletedThings})
 
-    @tier.setter
-    def tier(self,val):
-        if not(4<=val<0):
-            raise ValueError("Tier must be between 0 and 4")
-        self._dbData_.update({'tier':val})
+    def __str__(self):
+        res="{} is at tier {} of the ban system.".format(self.prawUser,self.tier)
+        if self.wasModded:
+            res+="  They were modded at the following times: "+(', '.join(self.deletedThings))
+        return res
+            
     
+
+
 class Redditors:
     def __init__(self, db, reddit):
         self.db=db
@@ -79,7 +98,7 @@ class Redditors:
         return userName in self._userSet_
 
     def __getitem__(self,userName):
-        if name not in _users_ and name in self:
+        if userName not in self._users_ and userName in self:
             self._users_[userName]=Redditor(userName,self.db,self.reddit)
         return self._users_[userName]
     
